@@ -6,6 +6,8 @@ let
 
   cfg = config.services.taigaBack;
 
+  djangoInitialUserJson = import ./initial_user_json { inherit cfg; };
+
   djangoSettings = pkgs.writeTextDir "taiga_back_settings.py" ''
     # Import default config from taiga-back
     from settings import *
@@ -33,19 +35,36 @@ let
     mkdir -p ${cfg.stateDir}/media
     mkdir -p ${cfg.stateDir}/static
 
+    # Inject our settings module into python path to execute django-admin
+    # command.
+    export PYTHONPATH=${djangoSettings}:$PYTHONPATH
+
     # Setup DB on first execution.
     if [ ! -e ${cfg.stateDir}/db_setup_done ]; then
-      export PYTHONPATH=${djangoSettings}:$PYTHONPATH
       # Some commands need to be executed from site-packages dir
       cd ${cfg.package}/${cfg.package.python.sitePackages}
       ${django-admin} migrate --noinput
-      ${django-admin} loaddata initial_user
+      ${django-admin} loaddata ${djangoInitialUserJson}
       ${django-admin} loaddata initial_project_templates
       ${django-admin} compilemessages
       ${django-admin} collectstatic --noinput
       ${lib.optionalString cfg.sampleData "${django-admin} sample_data"}
       echo $(date) > ${cfg.stateDir}/db_setup_done
     fi
+
+    ${lib.optionalString cfg.adminPasswordKey ''
+      if [ ! -e ${cfg.stateDir}/admin_password_done ]; then
+        # Set admin password
+        password=$(cat ${cfg.deployment.keys.djangoAdminPassword})
+        ${django-admin} shell -c "\
+        from taiga.users.models import User; \
+        admin = User.objects.get(username='${cfg.adminUsername}'); \
+        admin.set_password('$password'); \
+        admin.save()"
+        echo $(date) > ${cfg.stateDir}/admin_password_done
+      fi
+    ''}
+
   '';
 
 in {
@@ -118,6 +137,33 @@ in {
         configuration of taiga-back. Threfore all defaults can be overridden.
         Django configuration is python code, see the django and taiga docs
         for details and available settings.
+      '';
+    };
+
+    adminUsername = mkOption {
+      type = types.str;
+      default = "admin";
+      description = "Admin username";
+    };
+
+    adminFullName = mkOption {
+      type = types.str;
+      default = "Administrator";
+      description = "Admin full name";
+    };
+
+    adminEmail = mkOption {
+      type = types.str;
+      default = "admin@example.org";
+      description = "Admin email address";
+    };
+
+    adminPasswordKey = mkOption {
+      type = types.str;
+      default = null;
+      description = ''
+        Attribute name of the deployment key which contains the initial admin
+        password.";
       '';
     };
 
