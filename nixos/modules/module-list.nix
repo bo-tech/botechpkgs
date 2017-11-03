@@ -1,6 +1,6 @@
 [
   ./services/taiga/taiga-back.nix
   ./services/taiga/taiga-front.nix
-  ./services/thodecode/enterprise.nix
-  ./services/thodecode/vcsserver.nix
+  ./services/rhodecode/enterprise.nix
+  ./services/rhodecode/vcsserver.nix
 ]
