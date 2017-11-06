@@ -11,20 +11,8 @@ let
   djangoInitialUserJson = pkgs.writeText "taiga_back_initial_user.json"
     (import ./initial_user_json.nix { inherit cfg; });
 
-  djangoSettings = pkgs.writeTextDir "taiga_back_settings.py" ''
-    # Import default config from taiga-back
-    from settings import *
-
-    # Set some defaults from nix.
-    DEBUG = False
-    MEDIA_ROOT = "${cfg.stateDir}/media"
-    STATIC_ROOT = "${cfg.stateDir}/static"
-    STATIC_URL = "/static/"
-    MEDIA_URL = "/media/"
-
-    # Append extraConfig
-    ${cfg.extraConfig}
-  '';
+  djangoSettings = pkgs.writeTextDir "taiga_back_settings.py"
+    (import ./django_taiga_back_settings.py.nix { inherit cfg; });
 
   initTaigaBackScript = let
     django-admin="${cfg.package}/bin/django-admin";
