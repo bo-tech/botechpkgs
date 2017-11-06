@@ -26,10 +26,6 @@ let
     mkdir -p ${cfg.stateDir}/media
     mkdir -p ${cfg.stateDir}/static
 
-    # Inject our settings module into python path to execute django-admin
-    # command.
-    export PYTHONPATH=${djangoSettings}:$PYTHONPATH
-
     # Setup DB on first execution.
     if [ ! -e ${cfg.stateDir}/db_setup_done ]; then
       # Some commands need to be executed from site-packages dir
@@ -165,12 +161,13 @@ in {
       after = [ "network.target" "initTaigaBack.service" ];
       environment = {
         DJANGO_SETTINGS_MODULE = "taiga_back_settings";
+        PYTHONPATH = djangoSettings;
       };
       serviceConfig = {
         User = cfg.user;
         Group = cfg.group;
         Restart = "always";
-        ExecStart = "${cfg.package}/bin/gunicorn --workers ${toString cfg.workers} --timeout 60 --log-syslog --bind unix:/tmp/taiga-back.socket --pythonpath ${djangoSettings} taiga.wsgi";
+        ExecStart = "${cfg.package}/bin/gunicorn --workers ${toString cfg.workers} --timeout 60 --log-syslog --bind unix:/tmp/taiga-back.socket taiga.wsgi";
         ExecStop = "${pkgs.coreutils}/bin/kill -s TERM $MAINPID";
         ExecReload = "${pkgs.coreutils}/bin/kill -s HUP $MAINPID";
       };
@@ -184,6 +181,7 @@ in {
       after = [ "network.target" ];
       environment = {
         DJANGO_SETTINGS_MODULE = "taiga_back_settings";
+        PYTHONPATH = djangoSettings;
       };
       preStart = ''
         mkdir -m 0750 -p ${cfg.stateDir}
