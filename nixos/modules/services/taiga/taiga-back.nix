@@ -6,7 +6,10 @@ let
 
   cfg = config.services.taigaBack;
 
-  djangoInitialUserJson = import ./initial_user_json { inherit cfg; };
+  djangoSetUserPassword = ./django_set_user_password.py;
+
+  djangoInitialUserJson = pkgs.writeText "taiga_back_initial_user.json"
+    (import ./initial_user_json.nix { inherit cfg; });
 
   djangoSettings = pkgs.writeTextDir "taiga_back_settings.py" ''
     # Import default config from taiga-back
@@ -52,15 +55,12 @@ let
       echo $(date) > ${cfg.stateDir}/db_setup_done
     fi
 
-    ${lib.optionalString cfg.adminPasswordKey ''
+    # Set initial admin password.
+    ${lib.optionalString (cfg.adminPasswordKey != null) ''
       if [ ! -e ${cfg.stateDir}/admin_password_done ]; then
-        # Set admin password
-        password=$(cat ${cfg.deployment.keys.djangoAdminPassword})
-        ${django-admin} shell -c "\
-        from taiga.users.models import User; \
-        admin = User.objects.get(username='${cfg.adminUsername}'); \
-        admin.set_password('$password'); \
-        admin.save()"
+        export TAIGA_DJANGO_USERNAME=${cfg.adminUsername}
+        export TAIGA_DJANGO_PASSWORD=$(cat /run/keys/${cfg.adminPasswordKey})
+        ${django-admin} shell -c "$(cat ${djangoSetUserPassword})"
         echo $(date) > ${cfg.stateDir}/admin_password_done
       fi
     ''}
@@ -163,7 +163,8 @@ in {
       default = null;
       description = ''
         Attribute name of the deployment key which contains the initial admin
-        password.";
+        password. The password is only set once. Changing the password by
+        editing this value is not possible after the initial deployment.";
       '';
     };
 
