@@ -131,19 +131,19 @@ in {
     adminUsername = mkOption {
       type = types.str;
       default = "admin";
-      description = "Admin username";
+      description = "Admin username. Only set during initial deployment.";
     };
 
     adminFullName = mkOption {
       type = types.str;
       default = "Administrator";
-      description = "Admin full name";
+      description = "Admin full name. Only set during initial deployment.";
     };
 
     adminEmail = mkOption {
       type = types.str;
       default = "admin@example.org";
-      description = "Admin email address";
+      description = "Admin email address. Only set during initial deployment.";
     };
 
     adminPasswordKey = mkOption {
@@ -151,8 +151,7 @@ in {
       default = null;
       description = ''
         Attribute name of the deployment key which contains the initial admin
-        password. The password is only set once. Changing the password by
-        editing this value is not possible after the initial deployment.";
+        password. Only set during initial deployment.";
       '';
     };
 
