@@ -26,6 +26,8 @@ let
     mkdir -p ${cfg.stateDir}/media
     mkdir -p ${cfg.stateDir}/static
 
+    # TODO: This needs some time to finish and block the initial deployment
+    #       after "taiga...> setting up tmpfiles"
     # Setup DB on first execution.
     if [ ! -e ${cfg.stateDir}/db_setup_done ]; then
       # Some commands need to be executed from site-packages dir
