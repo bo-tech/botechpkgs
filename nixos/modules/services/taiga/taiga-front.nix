@@ -6,30 +6,27 @@ let
 
   cfg = config.services.taigaFront;
 
-  # TODO: Set production grade values.
-  defaultConfig = pkgs.writeText "conf.json" ''
-    {
-    "api": "${cfg.apiUrl}",
-    "eventsUrl": null,
-    "eventsMaxMissedHeartbeats": 5,
-    "eventsHeartbeatIntervalTime": 60000,
-    "eventsReconnectTryInterval": 10000,
-    "debug": true,
-    "debugInfo": true,
-    "defaultLanguage": "en",
-    "themes": ["taiga"],
-    "defaultTheme": "taiga",
-    "publicRegisterEnabled": true,
-    "feedbackEnabled": true,
-    "privacyPolicyUrl": null,
-    "termsOfServiceUrl": null,
-    "maxUploadFileSize": null,
-    "contribPlugins": [],
-    "tribeHost": null,
-    "importers": [],
-    "gravatar": true
-    }
-  '';
+  defaultConfig = {
+    api = "https://taiga.example.org/api/v1/";
+    eventsUrl = null;
+    eventsMaxMissedHeartbeats = 5;
+    eventsHeartbeatIntervalTime = 60000;
+    eventsReconnectTryInterval = 10000;
+    debug = false;
+    debugInfo = false;
+    defaultLanguage = "en";
+    themes = ["taiga"];
+    defaultTheme = "taiga";
+    publicRegisterEnabled = false;
+    feedbackEnabled = false;
+    privacyPolicyUrl = null;
+    termsOfServiceUrl = null;
+    maxUploadFileSize = null;
+    contribPlugins = [];
+    tribeHost = null;
+    importers = [];
+    gravatar = false;
+  };
 
 in {
 
@@ -51,20 +48,21 @@ in {
       '';
     };
 
-    apiUrl = mkOption {
-      type = types.str;
-      default = "https://taiga/api/v1/";
+    config = mkOption {
+      type = types.attrs;
+      default = {};
       description = ''
-        URL under which the frontend code can reach the taiga backend API. This
-        is normally the URL under which the taiga backend is exposed publically.
+        Attribute set containing the taiga frontend configuration.
       '';
     };
 
-    config = mkOption {
+    configFile = mkOption {
       type = types.path;
-      default = defaultConfig;
+      default = pkgs.writeText "taiga_front_config.json" (
+        builtins.toJSON (defaultConfig // cfg.config));
       description = ''
-        Path to the configuration file for the taiga frontend.
+        Path to the configuration file for the taiga frontend. Normally there is
+        no need to edit this directly, use the "config" attribute instead.
       '';
     };
 
@@ -87,7 +85,7 @@ in {
             tryFiles = "$uri $uri/ /index.html";
           };
           locations."/conf.json" = {
-            alias = "${cfg.config}";
+            alias = "${cfg.configFile}";
           };
         };
       };
