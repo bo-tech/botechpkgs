@@ -4,8 +4,8 @@
     {
         "model": "users.user",
         "fields": {
-            "username": "cfg.adminUsername",
-            "full_name": "cfg.adminFullName",
+            "username": "${cfg.adminUsername}",
+            "full_name": "${cfg.adminFullName}",
             "bio": "",
             "lang": "",
             "color": "",
@@ -17,7 +17,7 @@
             "token": "",
             "last_login": "2013-04-04T07:36:09.880Z",
             "password": "",
-            "email": "cfg.adminEmail",
+            "email": "${cfg.adminEmail}",
             "date_joined": "2013-04-01T13:48:21.711Z"
         }
     }
