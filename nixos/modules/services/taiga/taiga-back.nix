@@ -49,8 +49,8 @@ let
 
     # Set initial admin password.
     if [ ! -e ${cfg.stateDir}/admin_password_done ]; then
-      export TAIGA_DJANGO_USERNAME=${cfg.adminUsername}
-      export TAIGA_DJANGO_PASSWORD=$(cat ${config.deployment.keys.taigaAdminPassword.path})
+      export TAIGA_DJANGO_USERNAME="${cfg.adminUsername}"
+      export TAIGA_DJANGO_PASSWORD="$(cat ${config.deployment.keys.taigaAdminPassword.path})"
       ${django-admin} shell -c "$(cat ${djangoSetUserPassword})"
       echo $(date) > ${cfg.stateDir}/admin_password_done
     fi
