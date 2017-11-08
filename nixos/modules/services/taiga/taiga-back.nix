@@ -48,15 +48,12 @@ let
     ''}
 
     # Set initial admin password.
-    ${lib.optionalString (cfg.adminPasswordKey != null) ''
-      if [ ! -e ${cfg.stateDir}/admin_password_done ]; then
-        export TAIGA_DJANGO_USERNAME=${cfg.adminUsername}
-        export TAIGA_DJANGO_PASSWORD=$(cat /run/keys/${cfg.adminPasswordKey})
-        ${django-admin} shell -c "$(cat ${djangoSetUserPassword})"
-        echo $(date) > ${cfg.stateDir}/admin_password_done
-      fi
-    ''}
-
+    if [ ! -e ${cfg.stateDir}/admin_password_done ]; then
+      export TAIGA_DJANGO_USERNAME=${cfg.adminUsername}
+      export TAIGA_DJANGO_PASSWORD=$(cat ${config.deployment.keys.taigaAdminPassword.path})
+      ${django-admin} shell -c "$(cat ${djangoSetUserPassword})"
+      echo $(date) > ${cfg.stateDir}/admin_password_done
+    fi
   '';
 
 in {
@@ -151,17 +148,6 @@ in {
       description = "Admin email address. Only set during initial deployment.";
     };
 
-    adminPasswordKey = mkOption {
-      type = types.str;
-      default = null;
-      description = ''
-        Attribute name of the deployment key which contains the initial admin
-        password. By default the password is only set during initial deployment
-        but this behaviour can be changed by modifying the "updateAdminPassword"
-        setting.;
-      '';
-    };
-
     updateAdminPassword = mkOption {
       type = types.bool;
       default = false;
@@ -197,7 +183,8 @@ in {
     systemd.services.initTaigaBack = {
       description = "Initialization for the taiga backend";
       wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
+      wants = [ "taigaAdminPassword-key.service" ];
+      after = [ "network.target" "taigaAdminPassword-key.service" ];
       environment = {
         DJANGO_SETTINGS_MODULE = "taiga_back_settings";
         PYTHONPATH = djangoSettings;
