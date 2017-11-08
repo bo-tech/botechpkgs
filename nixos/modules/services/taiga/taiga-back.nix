@@ -41,6 +41,12 @@ let
       echo $(date) > ${cfg.stateDir}/db_setup_done
     fi
 
+    # Remove done indicator if admin password should be updated on every
+    # deployment.
+    ${lib.optionalString cfg.updateAdminPassword ''
+      rm -f ${cfg.stateDir}/admin_password_done
+    ''}
+
     # Set initial admin password.
     ${lib.optionalString (cfg.adminPasswordKey != null) ''
       if [ ! -e ${cfg.stateDir}/admin_password_done ]; then
@@ -150,7 +156,17 @@ in {
       default = null;
       description = ''
         Attribute name of the deployment key which contains the initial admin
-        password. Only set during initial deployment.";
+        password. By default the password is only set during initial deployment
+        but this behaviour can be changed by modifying the "updateAdminPassword"
+        setting.;
+      '';
+    };
+
+    updateAdminPassword = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        If set to "true" the admin password will be updated on every deployment.
       '';
     };
 
