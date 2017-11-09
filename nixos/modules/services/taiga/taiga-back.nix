@@ -163,6 +163,7 @@ in {
     systemd.services.taigaBack = {
       description = "Taiga backend service";
       wantedBy = [ "multi-user.target" ];
+      wants = [ "initTaigaBack.service" ];
       after = [ "network.target" "initTaigaBack.service" ];
       environment = {
         DJANGO_SETTINGS_MODULE = "taiga_back_settings";
