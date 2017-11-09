@@ -6,6 +6,12 @@ let
 
   cfg = config.services.taigaBack;
 
+  deploymentKeyUnits = [
+    "taigaAdminPassword-key.service"
+    "taigaDbPassword-key.service"
+    "taigaDjangoSecretKey-key.service"
+  ];
+
   djangoSetUserPassword = ./django_set_user_password.py;
 
   djangoInitialUserJson = pkgs.writeText "taiga_back_initial_user.json"
@@ -208,8 +214,8 @@ in {
     systemd.services.taigaBack = {
       description = "Taiga backend service";
       wantedBy = [ "multi-user.target" ];
-      wants = [ "initTaigaBack.service" ];
-      after = [ "network.target" "initTaigaBack.service" ];
+      wants = [ "initTaigaBack.service" ] ++ deploymentKeyUnits;
+      after = [ "network.target" "initTaigaBack.service" ] ++ deploymentKeyUnits;
       environment = {
         DJANGO_SETTINGS_MODULE = "taiga_back_settings";
         PYTHONPATH = djangoSettings;
@@ -229,8 +235,8 @@ in {
     systemd.services.initTaigaBack = {
       description = "Initialization for the taiga backend";
       wantedBy = [ "multi-user.target" ];
-      wants = [ "taigaAdminPassword-key.service" ];
-      after = [ "network.target" "taigaAdminPassword-key.service" ];
+      wants = deploymentKeyUnits;
+      after = [ "network.target" ] ++ deploymentKeyUnits;
       environment = {
         DJANGO_SETTINGS_MODULE = "taiga_back_settings";
         PYTHONPATH = djangoSettings;
