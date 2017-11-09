@@ -12,7 +12,7 @@ let
     (import ./initial_user_json.nix { inherit cfg; });
 
   djangoSettings = pkgs.writeTextDir "taiga_back_settings.py"
-    (import ./django_taiga_back_settings.py.nix { inherit cfg; });
+    (import ./django_taiga_back_settings.py.nix { inherit config cfg lib; });
 
   initTaigaBackScript = let
     django-admin="${cfg.package}/bin/django-admin";
@@ -154,6 +154,51 @@ in {
       description = ''
         If set to "true" the admin password will be updated on every deployment.
       '';
+    };
+
+    debug = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        This controls the django "DEBUG" setting and should be set to "false"
+        for production deployments.
+      '';
+    };
+
+    dbEngine = mkOption {
+      type = types.str;
+      default = "django.db.backends.postgresql";
+      description = "Database engine to use.";
+    };
+
+    dbName = mkOption {
+      type = types.str;
+      default = "taiga";
+      description = "Database name.";
+    };
+
+    dbUser = mkOption {
+      type = types.str;
+      default = "taiga";
+      description = "Database user.";
+    };
+
+    dbHost = mkOption {
+      type = types.str;
+      default = "database";
+      description = "Database hostname or IP address.";
+    };
+
+    mediaUrl = mkOption {
+      type = types.str;
+      default = "/media/";
+      description = "Django MEDIA_URL setting.";
+    };
+
+    staticUrl = mkOption {
+      type = types.str;
+      default = "/static/";
+      description = "Django STATIC_URL setting.";
     };
 
   };
