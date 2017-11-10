@@ -14,6 +14,10 @@ let
     inherit cfg;
   };
 
+  makeOptSymlink = import ./lib/make-opt-symlink.nix {
+    inherit pkgs;
+  };
+
 in {
   imports = [
   ];
@@ -143,9 +147,40 @@ in {
       type = types.string;
     };
 
+    installOptSymlink = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Install the symlink into /opt/rhodecode to allow an administrator
+        to easily access the CLI commands.
+      '';
+    };
+
+    initializeDatabase = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Initializing the database automatically is convenient, still it is
+        potentially dangerous. An example would be if you connect your shiny
+        new system to an existing database.
+
+        Turn it on when you want everything to be automatic.
+
+        The decision if the database has to be initialized is based on a
+        marker inside of the filesystem.
+      '';
+    };
+
   };
 
   config = mkIf cfg.enable {
+
+    environment.systemPackages =
+      pkgs.lib.optional cfg.installOptSymlink (makeOptSymlink cfg.package "enterprise");
+
+    environment.pathsToLink = [
+      "/opt/rhodecode"
+    ];
 
     systemd.services.enterprise = {
       description = "RhodeCode Enterprise";
@@ -185,6 +220,8 @@ in {
           chown -R ${cfg.user}:${cfg.group} ${cfg.reposDir}
         fi
 
+      ''
+      + (pkgs.lib.optionals cfg.initializeDatabase ''
         # Set up the database
         if ! test -e ${databaseInitMarker}
         then
@@ -208,7 +245,7 @@ in {
         else
           echo "Skipping database initialize, marker ${databaseInitMarker} found."
         fi
-      '';
+      '');
     };
 
     users.users = optionalAttrs (cfg.user == "enterprise") [{
@@ -222,4 +259,5 @@ in {
       name = "enterprise";
     }];
   };
+
 }

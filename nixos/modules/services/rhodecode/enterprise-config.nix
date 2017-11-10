@@ -430,7 +430,7 @@ channelstream.proxy_path = /_channelstream
 appenlight = false
 
 appenlight.server_url = https://api.appenlight.com
-appenlight.api_key = YOUR_API_KEY
+# appenlight.api_key = YOUR_API_KEY
 #appenlight.transport_config = https://api.appenlight.com?threaded=1&timeout=5
 
 # used for JS client
@@ -540,7 +540,7 @@ vcs.start_server = false
 ## `hg`  - mercurial
 ## `git` - git
 ## `svn` - subversion
-vcs.backends = hg, git, svn
+vcs.backends = git, hg, svn
 
 vcs.connection_timeout = 3600
 ## Compatibility version when creating SVN repositories. Defaults to newest version when commented out.
