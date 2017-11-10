@@ -284,7 +284,7 @@ in {
       };
     };
 
-    users.extraUsers = traceVal (filterAttrs (n: v: cfg.user == "taigaback" || n != "taigaback") {
+    users.extraUsers = filterAttrs (n: v: cfg.user == "taigaback" || n != "taigaback") {
       taigaback = {
         group = cfg.group;
         description = "User running the taiga backend.";
@@ -292,11 +292,11 @@ in {
       nginx = {
         extraGroups = [ "keys" cfg.group ];
       };
-    });
+    };
 
-    users.extraGroups = traceVal (filterAttrs (n: v: cfg.group == "taiga" || n != "taiga") {
+    users.extraGroups = filterAttrs (n: v: cfg.group == "taiga" || n != "taiga") {
       taiga = { };
-    });
+    };
 
   };
 
