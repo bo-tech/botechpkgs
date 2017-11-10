@@ -283,6 +283,21 @@ in {
         };
       };
     };
+
+    users.extraUsers = traceVal (filterAttrs (n: v: cfg.user == "taigaback" || n != "taigaback") {
+      taigaback = {
+        group = cfg.group;
+        description = "User running the taiga backend.";
+      };
+      nginx = {
+        extraGroups = [ "keys" cfg.group ];
+      };
+    });
+
+    users.extraGroups = traceVal (filterAttrs (n: v: cfg.group == "taiga" || n != "taiga") {
+      taiga = { };
+    });
+
   };
 
 }
