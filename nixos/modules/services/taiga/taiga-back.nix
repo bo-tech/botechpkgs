@@ -109,13 +109,13 @@ in {
 
     user = mkOption {
       type = types.str;
-      default = "nobody";
+      default = "taigaback";
       description = "User account under which taiga-back runs.";
     };
 
     group = mkOption {
       type = types.str;
-      default = "nogroup";
+      default = "taiga";
       description = "Group account under which taiga-back runs.";
     };
 
@@ -127,6 +127,10 @@ in {
         ADMINS = (
           ("Admin", "example@example.com"),
         )
+        SITES = {
+          "api": {"domain": "taiga.example.org", "scheme": "https", "name": "api"},
+          "front": {"domain": "taiga.example.org", "scheme": "https", "name": "front"},
+        }
       '';
       description = ''
         Additional django configuration which will be appended to the default
