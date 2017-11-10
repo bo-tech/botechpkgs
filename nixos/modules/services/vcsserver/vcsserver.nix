@@ -10,7 +10,7 @@ let
     inherit cfg;
   };
 
-  makeOptSymlink = import ./lib/make-opt-symlink.nix {
+  makeOptSymlink = import ../../../../lib/make-opt-symlink.nix {
     inherit pkgs;
   };
 
@@ -32,7 +32,7 @@ in {
     package = mkOption {
       type = types.package;
       example = literalExample "pkgs.rhodecode-vcsserver";
-      default = import ../vcsserver {
+      default = import ../../../../pkgs/rhodecode/vcsserver {
         inherit pkgs;
       };
       description = ''

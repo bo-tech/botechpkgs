@@ -14,7 +14,7 @@ let
     inherit cfg;
   };
 
-  makeOptSymlink = import ./lib/make-opt-symlink.nix {
+  makeOptSymlink = import ../../../../lib/make-opt-symlink.nix {
     inherit pkgs;
   };
 
@@ -36,7 +36,7 @@ in {
     package = mkOption {
       type = types.package;
       example = literalExample "pkgs.rhodecode-enterprise";
-      default = import ../enterprise {
+      default = import ../../../../pkgs/rhodecode/enterprise {
         inherit pkgs;
       };
       description = ''
