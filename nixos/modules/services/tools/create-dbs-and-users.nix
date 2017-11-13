@@ -19,9 +19,16 @@ let
   '');
 
   # Script that creates missing databases and users.
-  createMissingUsersAndDbs = pkgs.writeScript "createMissingUsersAndDbs.sh" ''
+  createMissingUsersAndDbs = let
+    pgCfg = config.services.postgresql;
+    psql = ''
+      ${pkgs.sudo}/bin/sudo -u ${pgCfg.superUser} -- \
+      ${pgCfg.package}/bin/psql --port=${toString pgCfg.port} -d postgres \
+    '';
+    psql_run = script: "${psql} -c \"${script}\"";
+    psql_get = script: "${psql_run script} -q -t -A";
+  in pkgs.writeScript "createMissingUsersAndDbs.sh" ''
     #! ${pkgs.bash}/bin/bash -e
-    export PATH=${pkgs.sudo}/bin:${config.services.postgresql.package}/bin:$PATH
 
     # Create missing users.
     users=( ${concatMapStringsSep " " (u: u.name) cfg.users} )
@@ -30,13 +37,10 @@ let
       user=''${users[$index]}
       pw_path=''${pw_paths[$index]}
 
-      user_exists=$(sudo -u postgres -- \
-        psql -q -t -A -d postgres -c \
-        "SELECT 1 AS exists FROM pg_user WHERE usename='$user';")
+      user_exists=$(${psql_get "SELECT 1 AS exists FROM pg_user WHERE usename='$user';"})
       if [ -z $user_exists ]; then
         password=$(cat $pw_path)
-        sudo -u postgres -- \
-          psql -c "CREATE USER $user WITH PASSWORD '$password';"
+        ${psql_run "CREATE USER $user WITH PASSWORD '$password';"}
       fi
     done
 
@@ -47,12 +51,9 @@ let
       database=''${databases[$index]}
       owner=''${owners[$index]}
 
-      db_exists=$(sudo -u postgres -- \
-        psql -q -t -A -d postgres -c \
-        "SELECT 1 AS exists FROM pg_database WHERE datname='$database';")
+      db_exists=$(${psql_get "SELECT 1 AS exists FROM pg_database WHERE datname='$database';"})
       if [ -z $db_exists ]; then
-        sudo -u postgres -- \
-          psql -c "CREATE DATABASE $database WITH OWNER '$owner';"
+        ${psql_run "CREATE DATABASE $database WITH OWNER '$owner';"}
       fi
     done
   '';
