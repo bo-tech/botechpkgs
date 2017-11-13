@@ -4,6 +4,16 @@
 { pkgs, fetchurl, fetchgit, fetchhg }:
 
 self: super: {
+  CairoSVG = super.buildPythonPackage {
+    name = "CairoSVG-2.0.1";
+    buildInputs = with self; [];
+    doCheck = false;
+    propagatedBuildInputs = with self; [cairocffi lxml cssselect Pillow tinycss];
+    src = fetchurl {
+      url = "https://pypi.python.org/packages/83/4d/be366b1508e386fd9d4c38aeb57e2e3bb2a89e56edfb80e89099e1ffd7f5/CairoSVG-2.0.1.tar.gz";
+      sha256 = "17f5qmmpvv1n5gyp9js6dv3w77577c0qykgqk4glyr1gb3g8gp4r";
+    };
+  };
   Django = super.buildPythonPackage {
     name = "Django-1.10.6";
     buildInputs = with self; [];
@@ -104,6 +114,16 @@ self: super: {
       sha256 = "0rdwb3piwwl30wfqg4ywm07276w7090xfq71lb5d6k5mk62pb3lp";
     };
   };
+  cairocffi = super.buildPythonPackage {
+    name = "cairocffi-0.8.0";
+    buildInputs = with self; [];
+    doCheck = false;
+    propagatedBuildInputs = with self; [cffi];
+    src = fetchurl {
+      url = "https://pypi.python.org/packages/85/89/1a6385420cd69bf2dde568946d9136ac3e549881618adff9ad9646f3df31/cairocffi-0.8.0.tar.gz";
+      sha256 = "0i9m3p39g9wrkpjvpawch2qmnmm3cnim7niz3nmmbcp2hrkixwk5";
+    };
+  };
   celery = super.buildPythonPackage {
     name = "celery-4.0.2";
     buildInputs = with self; [];
@@ -182,6 +202,17 @@ self: super: {
     src = fetchurl {
       url = "https://pypi.python.org/packages/a0/ed/651dff14c9a9a93417ec548fabaa628b5f92bb50a74d87f461c2a1d43bef/django-jinja-2.2.2.tar.gz";
       sha256 = "099b99iprkvlsndrjmw4v3i3i60i9gm1aq5r88z15r7vgmv6sigj";
+    };
+  };
+  django-pglocks = super.buildPythonPackage {
+    name = "django-pglocks-1.0.2";
+    buildInputs = with self; [];
+    doCheck = false;
+    propagatedBuildInputs = with self; [];
+    src = fetchgit {
+      url = "https://github.com/Xof/django-pglocks.git";
+      rev = "f5df93eab4eea5a71db6b7f034932ca2947194b4";
+      sha256 = "1blyyz723gad434j8wl7viyy0w5lx3yqyvw3z3hr47152zi1bdyv";
     };
   };
   django-picklefield = super.buildPythonPackage {
@@ -345,13 +376,13 @@ self: super: {
     };
   };
   oauthlib = super.buildPythonPackage {
-    name = "oauthlib-2.0.4";
+    name = "oauthlib-2.0.6";
     buildInputs = with self; [];
     doCheck = false;
     propagatedBuildInputs = with self; [];
     src = fetchurl {
-      url = "https://pypi.python.org/packages/78/46/c19c2d374a37d218c551717d873670216af7242bc92958df1701dcc5e76d/oauthlib-2.0.4.tar.gz";
-      sha256 = "04sdsy1qb1psxrkl36jwk6bvjccjipa0f8k9jvam7panncy2jkji";
+      url = "https://pypi.python.org/packages/a5/8a/212e9b47fb54be109f3ff0684165bb38c51117f34e175c379fce5c7df754/oauthlib-2.0.6.tar.gz";
+      sha256 = "1q8cqwzbr6sks9q1jkf26mnvkjzap4x6mhvi9rhlzzq6x40vamyf";
     };
   };
   premailer = super.buildPythonPackage {
@@ -515,13 +546,13 @@ self: super: {
     };
   };
   setuptools = super.buildPythonPackage {
-    name = "setuptools-36.6.0";
+    name = "setuptools-36.7.2";
     buildInputs = with self; [];
     doCheck = false;
     propagatedBuildInputs = with self; [];
     src = fetchurl {
-      url = "https://pypi.python.org/packages/45/29/8814bf414e7cd1031e1a3c8a4169218376e284ea2553cc0822a6ea1c2d78/setuptools-36.6.0.zip";
-      sha256 = "1dqjk0lrcflxq3rf4ljnjin5pm90h3rlhwzl8fi8sy9aaa4la1v2";
+      url = "https://pypi.python.org/packages/0f/22/7fdcc777ba60e2a8b1ea17f679c2652ffe80bd5a2f35d61c629cb9545d5e/setuptools-36.7.2.zip";
+      sha256 = "03928x49iacgnl58pxxfgxiq666j46y2pf65nhrmqa4ws26zv1md";
     };
   };
   six = super.buildPythonPackage {
@@ -532,6 +563,16 @@ self: super: {
     src = fetchurl {
       url = "https://pypi.python.org/packages/b3/b2/238e2590826bfdd113244a40d9d3eb26918bd798fc187e2360a8367068db/six-1.10.0.tar.gz";
       sha256 = "0snmb8xffb3vsma0z67i0h0w2g2dy0p3gsgh9gi4i0kgc5l8spqh";
+    };
+  };
+  tinycss = super.buildPythonPackage {
+    name = "tinycss-0.4";
+    buildInputs = with self; [];
+    doCheck = false;
+    propagatedBuildInputs = with self; [];
+    src = fetchurl {
+      url = "https://pypi.python.org/packages/05/59/af583fff6236c7d2f94f8175c40ce501dcefb8d1b42e4bb7a2622dff689e/tinycss-0.4.tar.gz";
+      sha256 = "0vkifr595h28ymkjhrswwf0bm23lhznh5f44xyp7x7jy1ssnyc0j";
     };
   };
   vine = super.buildPythonPackage {
