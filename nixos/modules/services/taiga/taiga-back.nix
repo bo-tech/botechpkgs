@@ -116,7 +116,7 @@ in {
     group = mkOption {
       type = types.str;
       default = "taiga";
-      description = "Group account under which taiga-back runs.";
+      description = "Group under which taiga-back runs.";
     };
 
     extraConfig = mkOption {
@@ -288,6 +288,7 @@ in {
       taigaback = {
         group = cfg.group;
         description = "User running the taiga backend.";
+        extraGroups = [ "keys" ];
       };
       nginx = {
         extraGroups = [ "keys" cfg.group ];
