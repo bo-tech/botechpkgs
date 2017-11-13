@@ -14,11 +14,11 @@ let
 
   djangoSetUserPassword = ./django_set_user_password.py;
 
-  djangoInitialUserJson = pkgs.writeText "taiga_back_initial_user.json"
+  djangoInitialUserJson = pkgs.writeText "initial_user.json"
     (import ./initial_user_json.nix { inherit cfg; });
 
-  djangoSettings = pkgs.writeTextDir "taiga_back_settings.py"
-    (import ./django_taiga_back_settings.py.nix { inherit config cfg lib; });
+  djangoSettings = pkgs.writeTextDir "django_settings.py"
+    (import ./django_settings.py.nix { inherit config cfg lib; });
 
   initTaigaBackScript = let
     django-admin="${cfg.package}/bin/django-admin";
@@ -221,7 +221,7 @@ in {
       wants = [ "initTaigaBack.service" ] ++ deploymentKeyUnits;
       after = [ "network.target" "initTaigaBack.service" ] ++ deploymentKeyUnits;
       environment = {
-        DJANGO_SETTINGS_MODULE = "taiga_back_settings";
+        DJANGO_SETTINGS_MODULE = "django_settings";
         PYTHONPATH = djangoSettings;
       };
       serviceConfig = {
@@ -242,7 +242,7 @@ in {
       wants = deploymentKeyUnits;
       after = [ "network.target" ] ++ deploymentKeyUnits;
       environment = {
-        DJANGO_SETTINGS_MODULE = "taiga_back_settings";
+        DJANGO_SETTINGS_MODULE = "django_settings";
         PYTHONPATH = djangoSettings;
       };
       preStart = ''
