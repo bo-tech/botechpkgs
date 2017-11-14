@@ -32,9 +32,7 @@ in {
     package = mkOption {
       type = types.package;
       example = literalExample "pkgs.rhodecode-vcsserver";
-      default = import ../../../../pkgs/rhodecode/vcsserver {
-        inherit pkgs;
-      };
+      default = pkgs.vcsserver;
       description = ''
         The VCSServer package to use for this service.
       '';

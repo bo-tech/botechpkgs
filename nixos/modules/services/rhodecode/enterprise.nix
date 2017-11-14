@@ -36,9 +36,7 @@ in {
     package = mkOption {
       type = types.package;
       example = literalExample "pkgs.rhodecode-enterprise";
-      default = import ../../../../pkgs/rhodecode/enterprise {
-        inherit pkgs;
-      };
+      default = pkgs.rhodecode;
       description = ''
         The RhodeCode Enterprise package to use for this service.
       '';
