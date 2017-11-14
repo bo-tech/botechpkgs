@@ -29,7 +29,7 @@ let
   #     !elem ext ["egg-info" "pyc"] &&
   #     !startsWith "result" path;
 
-  # taiga-src = builtins.filterSource src-filter ./.;
+  # taiga-back-src = builtins.filterSource src-filter ./.;
 
   pythonPackagesGenerated = import ./python-packages.nix {
     inherit pkgs;
@@ -41,8 +41,8 @@ let
   };
 
   pythonPackagesLocalOverrides = self: super: {
-    taiga = super.taiga.override (attrs: {
-    #   # src = taiga-src;
+    taiga-back = super.taiga-back.override (attrs: {
+    #   # src = taiga-back-src;
     });
   };
 
@@ -53,4 +53,4 @@ let
     (extends pythonPackagesGenerated
              basePythonPackagesUnfix))));
 
-in myPythonPackages.taiga
+in myPythonPackages.taiga-back
