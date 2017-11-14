@@ -1,20 +1,23 @@
-self: super: let
+self: super:
 
-  # lib = super.lib;
+let
+  callPackage = self.callPackage;
+in
 
-  # callPackage = super.callPackage;
+{
 
-in {
   nixos-container = super.nixos-container.overrideAttrs (oldAttrs: {
     src = ./pkgs/nixos-container/nixos-container.pl;
   });
 
-  # rhodecode = callPackage ./pkgs/rhodecode/enterprise { };
+  rhodecode = callPackage ./pkgs/rhodecode/enterprise { };
 
-  # taiga-back = callPackage ./pkgs/taiga/taiga-back { };
+  taiga-back = callPackage ./pkgs/taiga/taiga-back {
+    pythonPackages = self.python3Packages;
+  };
 
-  # taiga-front-dist = callPackage ./pkgs/taiga/taiga-front { };
+  taiga-front-dist = callPackage ./pkgs/taiga/taiga-front { };
 
-  # vcsserver = callPackage ./pkgs/rhodecode/vcsserver {};
+  vcsserver = callPackage ./pkgs/rhodecode/vcsserver {};
 
 }
