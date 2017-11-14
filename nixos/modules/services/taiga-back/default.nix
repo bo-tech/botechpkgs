@@ -93,7 +93,7 @@ in {
 
     package = mkOption {
       type = types.package;
-      default = import ../../../../pkgs/taiga/taiga-back { inherit pkgs; };
+      default = pkgs.taiga-back;
       description = ''
         The taiga backend package to use.
       '';

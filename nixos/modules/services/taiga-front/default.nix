@@ -35,7 +35,7 @@ in {
 
     package = mkOption {
       type = types.package;
-      default = import ../../../../pkgs/taiga/taiga-front { inherit pkgs; };
+      default = pkgs.taiga-front-dist;
       description = ''
         The taiga frontend package to use.
       '';
