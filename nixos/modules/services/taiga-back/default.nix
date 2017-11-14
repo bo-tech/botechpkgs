@@ -21,7 +21,7 @@ let
     (import ./django_settings.py.nix { inherit config cfg lib; });
 
   initTaigaBackScript = let
-    django-admin="${cfg.package}/bin/django-admin";
+    django-admin="${cfg.package}/bin/taiga-django-admin";
   in pkgs.writeScript "initTaigaBackScript.sh" ''
     #! ${pkgs.bash}/bin/bash -e
 
@@ -227,7 +227,7 @@ in {
         User = cfg.user;
         Group = cfg.group;
         Restart = "always";
-        ExecStart = "${cfg.package}/bin/gunicorn --workers ${toString cfg.workers} --timeout 60 --log-syslog --bind unix:/tmp/taiga-back.socket taiga.wsgi";
+        ExecStart = "${cfg.package}/bin/taiga-gunicorn --workers ${toString cfg.workers} --timeout 60 --log-syslog --bind unix:/tmp/taiga-back.socket taiga.wsgi";
         ExecStop = "${pkgs.coreutils}/bin/kill -s TERM $MAINPID";
         ExecReload = "${pkgs.coreutils}/bin/kill -s HUP $MAINPID";
       };
