@@ -75,14 +75,6 @@ in {
       '';
     };
 
-    port = mkOption {
-      type = types.int;
-      default = 80;
-      description = ''
-        Port number the taiga backend will listen on.
-      '';
-    };
-
     workers = mkOption {
       type = types.int;
       default = 3;
@@ -211,6 +203,13 @@ in {
       description = "Django STATIC_URL setting.";
     };
 
+    nginxVirtualHost = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      example = "taiga";
+      description = "Name of the nginx virtual host attribute to use.";
+    };
+
   };
 
   config = mkIf cfg.enable {
@@ -258,28 +257,19 @@ in {
       };
     };
 
-    services.nginx = {
-      enable = true;
-      virtualHosts = {
-        taigaBack = {
-          default = true;
-          serverName = "taiga-back";
-          listen = [
-            { addr = "0.0.0.0"; port = cfg.port; ssl=false; }
-            { addr = "[::]"; port = cfg.port; ssl=false; }
-          ];
-          locations."/api" = {
-            proxyPass = "http://unix:/tmp/taiga-back.socket:/api";
-          };
-          locations."/admin" = {
-            proxyPass = "http://unix:/tmp/taiga-back.socket:/admin";
-          };
-          locations."/static" = {
-            alias = "${cfg.stateDir}/static";
-          };
-          locations."/media" = {
-            alias = "${cfg.stateDir}/media";
-          };
+    services.nginx.virtualHosts = mkIf (cfg.nginxVirtualHost != null) {
+      "${cfg.nginxVirtualHost}" = {
+        locations."/api" = {
+          proxyPass = "http://unix:/tmp/taiga-back.socket:/api";
+        };
+        locations."/admin" = {
+          proxyPass = "http://unix:/tmp/taiga-back.socket:/admin";
+        };
+        locations."/static" = {
+          alias = "${cfg.stateDir}/static";
+        };
+        locations."/media" = {
+          alias = "${cfg.stateDir}/media";
         };
       };
     };
