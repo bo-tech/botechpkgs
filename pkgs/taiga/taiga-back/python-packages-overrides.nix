@@ -20,6 +20,12 @@ self: super: {
     '';
   });
 
+  raven = super.raven.override (oldAttrs: {
+    propagatedBuildInputs =
+      oldAttrs.propagatedBuildInputs
+      ++ optionals (!isPy3k) [ self.contextlib2 ];
+  });
+
   Pillow = super.Pillow.override (oldAttrs: rec {
     buildInputs = with self;
       oldAttrs.buildInputs
