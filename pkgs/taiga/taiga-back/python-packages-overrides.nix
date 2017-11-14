@@ -6,12 +6,13 @@
 with pkgs.lib;
 
 let
-  stdenv = pkgs.stdenv;
+  inherit (basePythonPackages) isPyPy isPy3k pythonOlder;
+  inherit (pkgs) stdenv;
 in
 
 self: super: {
 
-  asana = super.asana.override (attrs: {
+  asana = super.asana.override (oldAttrs: {
     patchPhase = ''
       echo > requirements.txt
       sed -i "s/requests~=2.9.1/requests >=2.9.1/" setup.py
@@ -20,8 +21,10 @@ self: super: {
   });
 
   Pillow = super.Pillow.override (oldAttrs: rec {
-    buildInputs = with self; oldAttrs.buildInputs ++ [
-      pkgs.freetype pkgs.libjpeg pkgs.zlib pkgs.libtiff pkgs.libwebp pkgs.tcl nose pkgs.lcms2 ]
+    buildInputs = with self;
+      oldAttrs.buildInputs
+      ++ [ pkgs.freetype pkgs.libjpeg pkgs.zlib pkgs.libtiff
+           pkgs.libwebp pkgs.tcl nose pkgs.lcms2 ]
       ++ optionals (isPyPy) [ pkgs.tk pkgs.xorg.libX11 ];
 
     # NOTE: we use LCMS_ROOT as WEBP root since there is not other setting for webp.
