@@ -5,6 +5,7 @@ let
 in
 
 {
+  btLib = callPackage ./lib { };
 
   nixos-container = super.nixos-container.overrideAttrs (oldAttrs: {
     src = ./pkgs/nixos-container/nixos-container.pl;

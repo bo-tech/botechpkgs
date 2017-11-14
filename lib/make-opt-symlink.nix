@@ -1,5 +1,4 @@
-{ pkgs
-}:
+{ pkgs, ... }:
 
 package: name: pkgs.stdenv.mkDerivation {
   name = "rhodecode-${name}-symlink";
