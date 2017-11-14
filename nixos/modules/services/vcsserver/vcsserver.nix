@@ -10,9 +10,7 @@ let
     inherit cfg;
   };
 
-  makeOptSymlink = import ../../../../lib/make-opt-symlink.nix {
-    inherit pkgs;
-  };
+  inherit (pkgs.btLib) makeOptSymlink;
 
 in {
   imports = [
