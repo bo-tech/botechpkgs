@@ -1,7 +1,7 @@
 self: super:
 
 let
-  callPackage = self.callPackage;
+  callPackage = super.callPackage;
 in
 
 {
