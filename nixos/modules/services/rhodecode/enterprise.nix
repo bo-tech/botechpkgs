@@ -14,7 +14,7 @@ let
     inherit cfg;
   };
 
-  inherit (pkgs.btLib) makeOptSymlink;
+  inherit (pkgs.btLib) makeOptSymlinkPrefix;
 
 in {
   imports = [
@@ -172,7 +172,7 @@ in {
   config = mkIf cfg.enable {
 
     environment.systemPackages =
-      pkgs.lib.optional cfg.installOptSymlink (makeOptSymlink cfg.package "enterprise");
+      pkgs.lib.optional cfg.installOptSymlink (makeOptSymlinkPrefix "rhodecode" "enterprise" cfg.package);
 
     environment.pathsToLink = [
       "/opt/rhodecode"

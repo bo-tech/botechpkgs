@@ -1,7 +1,9 @@
 { callPackage, ... }:
 
-{
+rec {
 
-  makeOptSymlink = callPackage ./make-opt-symlink.nix { };
+  makeOptSymlinkPrefix = callPackage ./make-opt-symlink.nix { };
+
+  makeOptSymlink = makeOptSymlinkPrefix null;
 
 }

@@ -1,10 +1,13 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
-package: name: pkgs.stdenv.mkDerivation {
-  name = "rhodecode-${name}-symlink";
+with lib;
+
+commonPrefix: name: package: pkgs.stdenv.mkDerivation {
+  name = "${optionalString (commonPrefix != null) "${commonPrefix}-"}${name}-symlink";
   phases = "installPhase";
   installPhase = ''
-    mkdir -p $out/opt/rhodecode
-    ln -s ${package} $out/opt/rhodecode/${name}
+    location=$out/opt${optionalString (commonPrefix != null) ("/" + commonPrefix)}
+    mkdir -p $location
+    ln -s ${package} $location/${name}
   '';
 }
