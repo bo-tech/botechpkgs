@@ -36,7 +36,7 @@ python-dateutil==2.6.0
 netaddr==0.7.19
 serpy==0.1.1
 psd-tools==1.4
-CairoSVG==2.0.1
+CairoSVG==2.5.1
 cryptography==1.7.1
 PyJWT==1.4.2
 asana==0.6.2
