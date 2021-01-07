@@ -29,7 +29,7 @@ bleach==1.5.0
 django-ipware==1.1.6
 premailer==3.0.1
 cssutils==1.0.1                 # Compatible with python 3.5
-lxml==3.7.3
+lxml==4.6.2
 git+https://github.com/Xof/django-pglocks.git@master
 pyjwkest==1.3.2
 python-dateutil==2.6.0
