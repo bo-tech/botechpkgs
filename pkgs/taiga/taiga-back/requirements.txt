@@ -10,7 +10,7 @@ six==1.10.0
 amqp==2.1.4
 djmail==1.0.0
 django-jinja==2.2.2
-jinja2==2.9.5
+jinja2==2.11.3
 pygments==2.2.0
 django-sites==0.9
 Markdown==2.6.8
