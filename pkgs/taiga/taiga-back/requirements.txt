@@ -4,7 +4,7 @@ django-picklefield==0.3.2
 django-sampledatahelper==0.4.1
 gunicorn==19.6.0
 psycopg2==2.7
-Pillow==3.4.2
+Pillow==9.0.1
 pytz==2016.10
 six==1.10.0
 amqp==2.1.4
